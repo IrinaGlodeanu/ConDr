@@ -27,19 +27,17 @@ public class LoginServlet extends HttpServlet {
 
                 String name=request.getParameter("txtUserName");
                 String pass=request.getParameter("txtPass");
+                String password="";
+                PreparedStatement preparedStatement = conn.prepareStatement("select password from useri where email=?");
+                preparedStatement.setString(1, name);
 
+                ResultSet rs = preparedStatement.executeQuery();
 
-                String sql = "{ ? = call operatii_pt_useri.Login_alerta(?,?) }";
-                CallableStatement statement = conn.prepareCall(sql);
-                statement.setString(2,name);
-                statement.setString(3,pass);
-                statement.registerOutParameter(1, java.sql.Types.INTEGER);
+                while(rs.next()) {
+                    password = rs.getString("password");
+                }
 
-                statement.execute();
-
-                int flag_alerta = statement.getInt(1);
-
-                if (flag_alerta != 0)
+                if (!pass.equals(password))
                 {//if n ame&pass not match then it display error page//
                     RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
                     out.println("<div class=\"row\">");
