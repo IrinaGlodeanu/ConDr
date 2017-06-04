@@ -12,6 +12,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.sun.xml.internal.ws.util.StringUtils" %>
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
          pageEncoding="US-ASCII"%>
 
@@ -59,7 +60,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.jsp"><span>c</span>on<span>d</span>r</a>
+                    <a class="navbar-brand" href="categorii.jsp"><span>c</span>on<span>d</span>r</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -104,12 +105,12 @@
                         email_user = rs.getString("email");
                         full_id = rs.getInt("userid");
 
+
                     }
                     full_name=prenume_user+" "+nume_user;
             } catch(Exception ex){
 
                     }
-
 
         %>
     <section id="content">
@@ -130,6 +131,29 @@
                         </center>
                     </div>
                 </div>
+            </div>
+            <div class="alert alert-danger">
+                <strong>Ai grija!</strong> Esti alergic la :
+
+                <%
+                    OracleConn oracleConn2 = new OracleConn();
+                    Connection conn77 = oracleConn2.getConn();
+                    response.setContentType("text/html");
+                    Statement stmt75 ;
+                    if(conn77!=null)
+                        try {
+
+                            stmt75 = conn77.createStatement();
+                            ResultSet rs2 = stmt75.executeQuery(" select ingredientname from useravoidingredient where userid="+full_id+"");
+                            while(rs2.next()) {
+                                String ingredient = rs2.getString("ingredientname");
+                                out.println( "<a href=\"#\" style=\"height:30px;width:200px\" class=\"btn btn-danger\"><i class=\"fa fa-exclamation-triangle\"></i>"+ StringUtils.capitalize(ingredient)+"</a>");
+                            }
+
+                        } catch(Exception ex){
+
+                        }
+                %>
             </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -256,6 +280,10 @@
                                     } catch(Exception ex){
 
                                     }
+
+
+
+
                             %>
 
                         </ul>
@@ -280,6 +308,7 @@
                                             int id_test=1;
                                             ArrayList<Integer> iduri_categ=new ArrayList<Integer>();
 
+                                            //PE ASTA E FACUT INDEX
                                             ResultSet rs2 = stmt2.executeQuery("select CAMPAIGNID,CATEGORYID from campaigncampaigncategory group by  CAMPAIGNID,CATEGORYID order by campaignid");
                                             while(rs2.next()) {
                                                 int id_categ = rs2.getInt("CATEGORYID");
@@ -305,8 +334,9 @@
                                             String id_de_pus="";
                                             stmt1 = conn.createStatement();
                                             int trecut=0;
+                                            //PE ASTA E FACUT INDEX
 
-                                            ResultSet rs = stmt1.executeQuery(" select * from campaign a,support b,useri c where a.campaignid=b.campaignid and b.userid=c.userid and c.email='"+userName+"'");
+                                            ResultSet rs = stmt1.executeQuery("select * from campaign a INNER JOIN support b ON a.campaignid=b.campaignid,useri c WHERE  b.userid=c.userid AND c.email='"+userName+"'");
                                             while(rs.next()) {
                                                 id_campaign = rs.getInt("campaignid");
                                                 String s = rs.getString("campaignname");
