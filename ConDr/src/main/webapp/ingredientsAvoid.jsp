@@ -2,15 +2,18 @@
 <%@ page import="com.connections.OracleConn" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.*" %>
+<%@ page import="com.sun.xml.internal.ws.util.StringUtils" %>
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
          pageEncoding="US-ASCII"%>
 
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <title>Moderna - Bootstrap 3 flat corporate template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <meta name="description" content="" />
+    <meta name="author" content="http://bootstraptaste.com" />
     <!-- css -->
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link href="css/fancybox/jquery.fancybox.css" rel="stylesheet">
@@ -22,18 +25,19 @@
     <!-- Theme skin -->
     <link href="skins/default.css" rel="stylesheet" />
 
+
 </head>
 <body>
 <%
     //allow access only if session exists
-    String user = (String) session.getAttribute("name"); //in user se pastreaza emailul
+    String user = (String) session.getAttribute("name");
     String userName = null;
     String sessionID = null;
     Cookie[] cookies = request.getCookies();
     if(cookies !=null){
         for(Cookie cookie : cookies){
             if(cookie.getName().equals("name")) userName = cookie.getValue();
-            if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();  //doar daca vreau sa mai afisez id-ul
+            if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
         }
     }
 %>
@@ -48,7 +52,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#"><span>condr</span></a>
+                    <a class="navbar-brand" href="categorii.jsp"><span>C</span>ondr</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -97,23 +101,32 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="post-heading">
+
                         <h3>Legume</h3> <!-- pot sa fac sa ia rezultate din bd, momentan hardcodez cu ce stiu ca am in bd-->
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="rosie">Rosie<br>
-                            <input type="checkbox" name="selectii" value="castravete">Castravete<br>
-                            <input type="checkbox" name="selectii" value="spanac">Spanac<br>
-                            <input type="checkbox" name="selectii" value="varza">Varza<br>
-                            <input type="checkbox" name="selectii" value="ardei">Ardei<br>
-                            <input type="checkbox" name="selectii" value="vanata">Vanata<br>
-                            <input type="checkbox" name="selectii" value="brocoli">Brocoli<br>
-                            <input type="checkbox" name="selectii" value="ceapa">Ceapa<br>
-                            <input type="checkbox" name="selectii" value="cartofi">Cartofi<br>
-                            <input type="checkbox" name="selectii" value="morcovi">Morcovi<br>
-                            <input type="checkbox" name="selectii" value="telina">Telina<br>
-                            <input type="checkbox" name="selectii" value="ridiche">Ridiche<br>
-                            <input type="checkbox" name="selectii" value="ardei iute">Ardei iute<br>
-                            <input type="submit" name="submit" value="Avoid"> //sau cu button- alt format
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+                        <%
+                            OracleConn oracleConn1 = new OracleConn();
+                            Connection conn1 = oracleConn1.getConn();
+
+                            response.setContentType("text/html");
+                            Statement stmt2;
+                            if(conn1!=null)
+                            try {
+
+                            stmt2 = conn1.createStatement();
+                            ResultSet rs2 = stmt2.executeQuery("SELECT ingredientname from legume");
+                            while(rs2.next()) {
+                            String ingredient = rs2.getString("ingredientname");
+                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                            }
+
+
+                            } catch(Exception ex){
+
+                            }
+                            %>
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
@@ -121,22 +134,29 @@
                     <div class="post-heading">
                         <h3>Fructe</h3>
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="mar">Mar<br>
-                            <input type="checkbox" name="selectii" value="para">Para<br>
-                            <input type="checkbox" name="selectii" value="banana">Banana<br>
-                            <input type="checkbox" name="selectii" value="kiwi">Kiwi<br>
-                            <input type="checkbox" name="selectii" value="nuca">Nuca<br>
-                            <input type="checkbox" name="selectii" value="alune">Alune<br>
-                            <input type="checkbox" name="selectii" value="alune de padure">Alune de padure<br>
-                            <input type="checkbox" name="selectii" value="portocala">Portocala<br>
-                            <input type="checkbox" name="selectii" value="grepfruit">Grepfruit<br>
-                            <input type="checkbox" name="selectii" value="piersica">Piersica<br>
-                            <input type="checkbox" name="selectii" value="caisa">Caisa<br>
-                            <input type="checkbox" name="selectii" value="capsuna">Capsuna<br>
-                            <input type="checkbox" name="selectii" value="lamaie">Lamaie<br>
-                            <input type="checkbox" name="selectii" value="strugure">Strugure<br>
-                            <input type="submit" name="submit" value="Avoid">
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+
+                            <%
+
+                                response.setContentType("text/html");
+                                Statement stmt3 ;
+                                if(conn1!=null)
+                                    try {
+
+                                        stmt3 = conn1.createStatement();
+                                        ResultSet rs2 = stmt3.executeQuery("SELECT ingredientname from Fructe");
+                                        while(rs2.next()) {
+                                            String ingredient = rs2.getString("ingredientname");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                        }
+
+                                    } catch(Exception ex){
+
+                                    }
+                            %>
+
+
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
@@ -144,15 +164,29 @@
                     <div class="post-heading">
                         <h3>Produse Animale</h3>
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="carne de pui">Carne de pui<br>
-                            <input type="checkbox" name="selectii" value="carne de vita">Carne de vita<br>
-                            <input type="checkbox" name="selectii" value="carne de porc">Carne de porc<br>
-                            <input type="checkbox" name="selectii" value="carne de peste">Carne de peste<br>
-                            <input type="checkbox" name="selectii" value="ou">Ou<br>
-                            <input type="checkbox" name="selectii" value="pene">Pene<br>
-                            <input type="checkbox" name="selectii" value="blana">Blana<br>
-                            <input type="submit" name="submit" value="Avoid">
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+
+                            <%
+
+                                response.setContentType("text/html");
+                                Statement stmt1 ;
+                                if(conn1!=null)
+                                    try {
+
+                                        stmt1 = conn1.createStatement();
+                                        ResultSet rs2 = stmt1.executeQuery("SELECT ingredientname from produse_animale");
+                                        while(rs2.next()) {
+                                            String ingredient = rs2.getString("ingredientname");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                        }
+
+                                    } catch(Exception ex){
+
+                                    }
+                            %>
+
+
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
@@ -160,21 +194,28 @@
                     <div class="post-heading">
                         <h3>Asezonari</h3>
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="zahar">Zahar<br>
-                            <input type="checkbox" name="selectii" value="sare">Sare<br>
-                            <input type="checkbox" name="selectii" value="piper">Piper<br>
-                            <input type="checkbox" name="selectii" value="hamei">Hamei<br>
-                            <input type="checkbox" name="selectii" value="cimbru">Cimbru<br>
-                            <input type="checkbox" name="selectii" value="patrunjel">Patrunjel<br>
-                            <input type="checkbox" name="selectii" value="leustean">Leustean<br>
-                            <input type="checkbox" name="selectii" value="marar">Marar<br>
-                            <input type="checkbox" name="selectii" value="chimen">Chimen<br>
-                            <input type="checkbox" name="selectii" value="oregano">Oregano<br>
-                            <input type="checkbox" name="selectii" value="paprika">Paprika<br>
-                            <input type="checkbox" name="selectii" value="cacao">Cacao<br>
-                            <input type="checkbox" name="selectii" value="menta">Menta<br>
-                            <input type="submit" name="submit" value="Avoid">
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+                            <%
+
+                                response.setContentType("text/html");
+                                Statement stmt5 ;
+                                if(conn1!=null)
+                                    try {
+
+                                        stmt5 = conn1.createStatement();
+                                        ResultSet rs2 = stmt5.executeQuery("SELECT ingredientname from Asezonari");
+                                        while(rs2.next()) {
+                                            String ingredient = rs2.getString("ingredientname");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                        }
+
+                                    } catch(Exception ex){
+
+                                    }
+                            %>
+
+
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
@@ -185,15 +226,28 @@
                     <div class="post-heading">
                         <h3>Lactate</h3>
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="Lapte de vaca">Lapte de vaca<br>
-                            <input type="checkbox" name="selectii" value="Lapte de bivolita">Lapte de bivolita<br>
-                            <input type="checkbox" name="selectii" value="Lapte de capra">Lapte de capra<br>
-                            <input type="checkbox" name="selectii" value="Lapte de oaie">Lapte de oaie<br>
-                            <input type="checkbox" name="selectii" value="Zer">Zer<br>
-                            <input type="checkbox" name="selectii" value="Lapte praf">Lapte praf<br>
-                            <input type="checkbox" name="selectii" value="Lapte condensat">Lapte condensat<br>
-                            <input type="submit" name="submit" value="Avoid">
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+                            <%
+
+                                response.setContentType("text/html");
+                                Statement stmt6 ;
+                                if(conn1!=null)
+                                    try {
+
+                                        stmt6 = conn1.createStatement();
+                                        ResultSet rs2 = stmt6.executeQuery("SELECT ingredientname from Lactate");
+                                        while(rs2.next()) {
+                                            String ingredient = rs2.getString("ingredientname");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                        }
+
+                                    } catch(Exception ex){
+
+                                    }
+                            %>
+
+
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
@@ -201,17 +255,28 @@
                     <div class="post-heading">
                         <h3>Cereale</h3>
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="grau">Grau<br>
-                            <input type="checkbox" name="selectii" value="orez">Orez<br>
-                            <input type="checkbox" name="selectii" value="porumb">Porumb<br>
-                            <input type="checkbox" name="selectii" value="ovaz">Ovaz<br>
-                            <input type="checkbox" name="selectii" value="secara">Secara<br>
-                            <input type="checkbox" name="selectii" value="orz">Orz<br>
-                            <input type="checkbox" name="selectii" value="hrisca">Hrisca<br>
-                            <input type="checkbox" name="selectii" value="soia">Soia<br>
-                            <input type="checkbox" name="selectii" value="naut">Naut<br>
-                            <input type="submit" name="submit" value="Avoid">
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+                            <%
+
+                                response.setContentType("text/html");
+                                Statement stmt7 ;
+                                if(conn1!=null)
+                                    try {
+
+                                        stmt7 = conn1.createStatement();
+                                        ResultSet rs2 = stmt7.executeQuery("SELECT ingredientname from Cereale");
+                                        while(rs2.next()) {
+                                            String ingredient = rs2.getString("ingredientname");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                        }
+
+                                    } catch(Exception ex){
+
+                                    }
+                            %>
+
+
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
@@ -219,26 +284,35 @@
                     <div class="post-heading">
                         <h3>Produse chimice</h3>
                         <form action="ingredientsAvoidServlet" method="post">
-                            <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
-                            <input type="checkbox" name="selectii" value="naftalina">Naftalina<br>
-                            <input type="checkbox" name="selectii" value="colorant alimentar">Colorant alimentar<br>
-                            <input type="checkbox" name="selectii" value="mercur">Mercur<br>
-                            <input type="checkbox" name="selectii" value="E456">E456<br>
-                            <input type="checkbox" name="selectii" value="E308">E308<br>
-                            <input type="checkbox" name="selectii" value="aditiv de crestere">Aditiv de crestere<br>
-                            <input type="checkbox" name="selectii" value="guma guar">Guma guar<br>
-                            <input type="checkbox" name="selectii" value="guma xantan">Guma xantan<br>
-                            <input type="checkbox" name="selectii" value="acid ascorbic">Acid ascorbic<br>
-                            <input type="checkbox" name="selectii" value="aditiv de afanare">Aditiv de afanare<br>
-                            <input type="checkbox" name="selectii" value="cheag">Cheag<br>
-                            <input type="submit" name="submit" value="Avoid">
+                        <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
+                            <%
+
+                                response.setContentType("text/html");
+                                Statement stmt8 ;
+                                if(conn1!=null)
+                                    try {
+
+                                        stmt8 = conn1.createStatement();
+                                        ResultSet rs2 = stmt8.executeQuery("SELECT ingredientname from produse_chimice");
+                                        while(rs2.next()) {
+                                            String ingredient = rs2.getString("ingredientname");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                        }
+
+                                    } catch(Exception ex){
+
+                                    }
+                            %>
+
+
+                        <input type="submit" name="submit" value="Avoid">
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-</div>
+ </div>
 <a href="#" class="scrollup"><i class="fa fa-angle-up active"></i></a>
 <!-- javascript
     ================================================== -->
