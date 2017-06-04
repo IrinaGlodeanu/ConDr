@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: pc
-  Date: 4/24/2017
-  Time: 1:21 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@page import="java.sql.*"%>
 <%@ page import="com.connections.OracleConn" %>
 <%@ page import="java.io.PrintWriter" %>
@@ -12,7 +5,7 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
          pageEncoding="US-ASCII"%>
 
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -26,30 +19,31 @@
     <link href="css/jcarousel.css" rel="stylesheet" />
     <link href="css/flexslider.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
-
+    <link href="css/test.css" rel="stylesheet" />
 
 
     <!-- Theme skin -->
     <link href="skins/default.css" rel="stylesheet" />
 
+
 </head>
 <body>
-    <%
-        //allow access only if session exists
-        String user = (String) session.getAttribute("name");
-        String userName = null;
-        String sessionID = null;
-        Cookie[] cookies = request.getCookies();
-        if(cookies !=null){
-            for(Cookie cookie : cookies){
-                if(cookie.getName().equals("name")) userName = cookie.getValue();
-                if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
-            }
+<%
+    //allow access only if session exists
+    String user = (String) session.getAttribute("name");
+    String userName = null;
+    String sessionID = null;
+    Cookie[] cookies = request.getCookies();
+    if(cookies !=null){
+        for(Cookie cookie : cookies){
+            if(cookie.getName().equals("name")) userName = cookie.getValue();
+            if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
         }
-    %>
+    }
+%>
 
 <div id="wrapper">
-    <!-- AICI DECOMENTEZ CA SA ARAT ID SESIUNE, SI USER PRIMIT
+   <!-- AICI DECOMENTEZ CA SA ARAT ID SESIUNE, SI USER PRIMIT
    <div class="row">
         <div class="col-lg-12">
             <div class="alert alert-success">
@@ -67,7 +61,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="categorii.jsp"><span>condr</span></a>
+                    <a class="navbar-brand" href="categorii.jsp"><span>c</span>on<span>d</span>r</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -80,8 +74,15 @@
                         <li><a href="categorii.jsp">Home</a></li>
                         <li><a href="profil.jsp">Profil</a></li>
                         <li>  <a href="CheckoutPage.jsp">Checkout Page</a></li>
-
-
+<!--
+                        <li>
+                            <form action="LogoutServlet" method="post" class="inline">
+                            <input type="hidden" value="Logout" >
+                            <button  type="submit" value="Logout" class="link-button">
+                                Logout
+                            </button>
+                        </form>
+                        </li>-->
 
 
                     </ul>
@@ -142,6 +143,7 @@
                             <ul id="thumbs" class="portfolio">
 
                                 <%
+
                                     OracleConn oracleConn1 = new OracleConn();
                                     Connection conn1 = oracleConn1.getConn();
 
@@ -164,8 +166,8 @@
                                                     if (data.get(id_test) == null)data.put(id_test, new ArrayList<Integer>());
                                                     for(int i=0;i<iduri_categ.size();i++)
                                                         data.get(id_test).add(iduri_categ.get(i));
-                                                    // data.put(id_test,iduri_categ);
-                                                    // System.out.println("LISTA ASTA CONTINE contains: "+ id_test + iduri_categ.toString());
+
+
                                                     iduri_categ.clear();
                                                 }
 
@@ -195,10 +197,10 @@
                                                 for (Map.Entry<Integer, ArrayList<Integer>> entry : data.entrySet()) {
                                                     //System.out.println("cheie: " +entry.getKey());
                                                     if (entry.getKey().equals(id_campaign)) {
-                                                        // id_de_pus=id_de_pus+ " " + Integer.toString(entry.getValue());
+                                                       // id_de_pus=id_de_pus+ " " + Integer.toString(entry.getValue());
                                                         list12= entry.getValue();
                                                         ArrayList<Integer> list13= data.get(id_campaign);
-                                                        // System.out.println("Arraylist contains: " + list12.toString());
+                                                       // System.out.println("Arraylist contains: " + list12.toString());
 
 
                                                         for (Integer i2 : list12)
@@ -207,7 +209,7 @@
                                                             //System.out.println(id_de_pus);
                                                         }
                                                         trecut++;
-                                                        // System.out.println("aici a mai trecut"+trecut);
+                                                       // System.out.println("aici a mai trecut"+trecut);
                                                     }}
 
                                                 //  String s2 = rs.getString("BARCODE");
@@ -217,9 +219,9 @@
                                                 out.println( "<span class=\"overlay-img\"></span>");
                                                 out.println( "<span class=\"overlay-img-thumb font-icon-plus\"></span>");
                                                 out.println( " </a>");
-                                                // out.println("<a href=\"#\" class=\"btn btn-small btn-warning\"><i class=\"fa fa-heart\"></i>Follow</a>");
-                                                // out.println( " <img src=\"img/works/1.jpg\" alt='"+s2+"");
-                                                // out.println( "<a href=\"#\" class=\"btn btn-small btn-warning pull-right\"><i class=\"fa fa-heart\"></i>Follow</a>'>");
+                                               // out.println("<a href=\"#\" class=\"btn btn-small btn-warning\"><i class=\"fa fa-heart\"></i>Follow</a>");
+                                               // out.println( " <img src=\"img/works/1.jpg\" alt='"+s2+"");
+                                               // out.println( "<a href=\"#\" class=\"btn btn-small btn-warning pull-right\"><i class=\"fa fa-heart\"></i>Follow</a>'>");
 
                                                 out.println( " <img src=\"img/works/1.jpg\" alt='"+s2+"");
                                                 out.println( "<form action=\"insertSupport\" method=\"POST\" >");
@@ -248,7 +250,7 @@
             </div>
         </div>
     </section>
-</div>
+ </div>
 <a href="#" class="scrollup"><i class="fa fa-angle-up active"></i></a>
 <!-- javascript
     ================================================== -->

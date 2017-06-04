@@ -1,11 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: pc
-  Date: 4/24/2017
-  Time: 5:57 AM
-  To change this template use File | Settings | File Templates.
---%>
-
 <%@page import="java.sql.*"%>
 <%@ page import="com.connections.OracleConn" %>
 <%@ page import="java.io.PrintWriter" %>
@@ -13,12 +5,14 @@
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
          pageEncoding="US-ASCII"%>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Search</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <meta name="description" content="" />
+    <meta name="author" content="http://bootstraptaste.com" />
     <!-- css -->
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link href="css/fancybox/jquery.fancybox.css" rel="stylesheet">
@@ -30,6 +24,7 @@
 
     <!-- Theme skin -->
     <link href="skins/default.css" rel="stylesheet" />
+
 
 </head>
 <body>
@@ -57,7 +52,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.html"><span>condr</span></a>
+                    <a class="navbar-brand" href="categorii.jsp">condr</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -85,33 +80,34 @@
                     <ul id="myList" class="list-unstyled">
                         <%
 
-                            String text1 = request.getParameter("nume_prod_de_la_user");
+                                String text1 = request.getParameter("nume_prod_de_la_user");
 
-                            System.out.println("Am intrat in checkProductSearch: "+text1 );
+                                System.out.println("Am intrat in checkProductSearch: "+text1 );
 
-                            OracleConn oracleConn3 = new OracleConn();
-                            Connection conn3 = oracleConn3.getConn();
-                            response.setContentType("text/html");
+                                OracleConn oracleConn3 = new OracleConn();
+                                Connection conn3 = oracleConn3.getConn();
+                                response.setContentType("text/html");
+                                //PE ASTA E FACUT INDEX
                             Statement stmt4=null;
-                            if(conn3!=null)
-                                try {
-                                    String query=" select * from products where lower(prodname) like lower('%"+text1+"%')";
-                                    System.out.println(query);
-                                    int flag=0;
-                                    stmt4 = conn3.createStatement();
+                                if(conn3!=null)
+                                    try {
+                                        String query=" select * from products where lower(prodname) like lower('%"+text1+"%')";
+                                        System.out.println(query);
+                                        int flag=0;
+                                        stmt4 = conn3.createStatement();
 
-                                    ResultSet rs3 = stmt4.executeQuery(query);
-                                    while(rs3.next()) {
-                                        if(flag==0){System.out.println("am intrat in WHILE");flag=1;};
+                                        ResultSet rs3 = stmt4.executeQuery(query);
+                                        while(rs3.next()) {
+                                            if(flag==0){System.out.println("am intrat in WHILE");flag=1;};
 
-                                        String produs_nume = rs3.getString("prodname");
-                                        out.println(" <li class=\"alert alert-warning\" style=\"display:none;\">"+produs_nume+"</li>");
+                                            String produs_nume = rs3.getString("prodname");
+                                            out.println(" <li class=\"alert alert-warning\" style=\"display:none;\">"+produs_nume+"</li>");
+                                        }
+
+
+                                    } catch (SQLException e) {
+                                        System.err.println("SQLException: " + e.getMessage());
                                     }
-
-
-                                } catch (SQLException e) {
-                                    System.err.println("SQLException: " + e.getMessage());
-                                }
 
                         %>
                     </ul>
@@ -125,7 +121,7 @@
 </div>
 <a href="#" class="scrollup"><i class="fa fa-angle-up active"></i></a>
 <!-- javascript
-        ================================================== -->
+    ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="js/jquery.js"></script>
 <script src="js/jquery.easing.1.3.js"></script>
@@ -164,4 +160,3 @@
     });</script>
 </body>
 </html>
-

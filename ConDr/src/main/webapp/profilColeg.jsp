@@ -33,12 +33,6 @@
     <!-- Theme skin -->
     <link href="skins/default.css" rel="stylesheet" />
 
-    <!-- =======================================================
-        Theme Name: Moderna
-        Theme URL: https://bootstrapmade.com/free-bootstrap-template-corporate-moderna/
-        Author: BootstrapMade
-        Author URL: https://bootstrapmade.com
-    ======================================================= -->
 
 </head>
 <body>
@@ -66,7 +60,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="index.jsp"><span>c</span>on<span>d</span>r</a>
+                    <a class="navbar-brand" href="categorii.jsp"><span>c</span>on<span>d</span>r</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">

@@ -1,8 +1,6 @@
 package com.servlets.filters;
 
-/**
- * Created by Alex on 21-Apr-17.
- */
+
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -17,9 +15,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Servlet Filter implementation class RequestLoggingFilter
- */
+
 @WebFilter("/RequestLoggingFilter")
 public class RequestLoggingFilter implements Filter {
 
