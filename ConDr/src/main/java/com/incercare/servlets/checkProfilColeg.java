@@ -18,9 +18,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Alex on 22-Apr-17.
- */
+
 @WebServlet("/checkProfilColeg")
 public class checkProfilColeg extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -74,7 +72,7 @@ public class checkProfilColeg extends HttpServlet {
                 out.println("<div class=\"row\">");
                 out.println("<div class=\"col-lg-12\">");
                 out.println("<div class=\"alert alert-warning\">");
-                out.println("<strong>Ba boule, </strong> Nu exista colegul asta.");
+                out.println("<strong>:( , </strong> Nu exista colegul asta.");
                 out.println("</div>");
                 out.println("</div>");
                 out.println("</div>");

@@ -8,9 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.RequestDispatcher;
 
-/**
- * Servlet implementation class LoginServlet
- */
+
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -44,7 +42,7 @@ public class LoginServlet extends HttpServlet {
                     out.println("<div class=\"col-lg-12\">");
                     out.println("<div class=\"alert alert-warning\">");
                     out.println("<strong>Atentie!</strong> Emailul sau parola sunt gresite.");
-                 //   out.println("<font color=red>Either user name or password is wrong.</font>");
+                    //   out.println("<font color=red>Either user name or password is wrong.</font>");
                     out.println("</div>");
                     out.println("</div>");
                     out.println("</div>");

@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
-/**
- * Created by pc on 4/24/2017.
- */
+import static java.lang.System.out;
 
 
 @WebServlet("/insertSupport")
@@ -55,19 +53,19 @@ public class insertSupport extends HttpServlet {
 
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         int flag=0;
         try {
 
-            String textNumber1 = request.getParameter("idut_user");
-            String textNumber2 = request.getParameter("idut_campanie");
-            int number1 = Integer.parseInt(textNumber1);
-            int number2 = Integer.parseInt(textNumber2);
+        String textNumber1 = request.getParameter("idut_user");
+        String textNumber2 = request.getParameter("idut_campanie");
+        int number1 = Integer.parseInt(textNumber1);
+        int number2 = Integer.parseInt(textNumber2);
 
-            System.out.println("Am intrat in insertSupport: "+number1 + " " + number2);
+        System.out.println("Am intrat in insertSupport: "+number1 + " " + number2);
 
             OracleConn oracleConn3 = new OracleConn();
             Connection conn3 = oracleConn3.getConn();
@@ -87,7 +85,7 @@ public class insertSupport extends HttpServlet {
                             out.println("<div class=\"row\">");
                             out.println("<div class=\"col-lg-12\">");
                             out.println("<div class=\"alert alert-warning\">");
-                            out.println("<strong>Hey, </strong> Ai dat deja follow la campania asta :) .");
+                            out.println("<strong>:(, </strong> Ai dat deja follow la campania asta.");
                             out.println("</div>");
                             out.println("</div>");
                             out.println("</div>");
@@ -98,9 +96,9 @@ public class insertSupport extends HttpServlet {
                     System.err.println("SQLException: " + e.getMessage());
                 }
 
-            if(flag==0){insertAnotherSupport(number1,number2);
+        if(flag==0){insertAnotherSupport(number1,number2);
 
-                this.getServletContext().getRequestDispatcher("/categorii.jsp").forward(request, response);}
+        this.getServletContext().getRequestDispatcher("/categorii.jsp").forward(request, response);}
         } catch (SQLException e) {
             out.println(e.getMessage());
         }
@@ -111,4 +109,3 @@ public class insertSupport extends HttpServlet {
 
     }
 }
-
