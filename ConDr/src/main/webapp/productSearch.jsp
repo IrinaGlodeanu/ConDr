@@ -1,7 +1,23 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Alex
+  Date: 23-Apr-17
+  Time: 2:07 PM
+  To change this template use File | Settings | File Templates.
+--%>
 <%@page import="java.sql.*"%>
 <%@ page import="com.connections.OracleConn" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.io.InputStream" %>
+<%@ page import="java.io.InputStreamReader" %>
+<%@ page import="java.net.HttpURLConnection" %>
+<%@ page import="java.net.URL" %>
+<%@ page import="org.json.JSONArray" %>
+<%@ page import="org.json.JSONObject" %>
+<%@ page import="sun.misc.IOUtils" %>
+<%@ page import="org.json.JSONTokener" %>
+<%@ page import="java.io.BufferedReader" %>
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
          pageEncoding="US-ASCII"%>
 
@@ -52,7 +68,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="categorii.jsp">condr</a>
+                    <a class="navbar-brand" href="index.html">condr</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -101,7 +117,14 @@
                                             if(flag==0){System.out.println("am intrat in WHILE");flag=1;};
 
                                             String produs_nume = rs3.getString("prodname");
-                                            out.println(" <li class=\"alert alert-warning\" style=\"display:none;\">"+produs_nume+"</li>");
+                                            int produs_id = rs3.getInt("prodid");
+                                            out.println(" <li class=\"alert alert-warning\" style=\"display:none;\">"+produs_nume+"");
+                                            out.println( "<form action=\"checkProduct\" method=\"POST\" >");
+                                            out.println( "<input type=\"hidden\" name=\"nume_produs\" value=\""+produs_nume+"\">");
+                                            out.println( "<input type=\"hidden\" name=\"id_produs\" value="+produs_id+">");
+                                            out.println( "<button type=\"submit\" class=\"btn btn-theme pull-right\">Check Product</button>");
+                                            out.println("</form>");
+                                            out.println("</li>");
                                         }
 
 
