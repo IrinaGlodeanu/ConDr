@@ -12,10 +12,13 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.io.InputStream" %>
+<%@ page import="java.io.OutputStream" %>
+<%@ page import="java.io.FileOutputStream" %>
+<%@ page import="static com.sun.org.apache.xerces.internal.xinclude.XIncludeHandler.BUFFER_SIZE" %>
 <%@ page import="com.sun.xml.internal.ws.util.StringUtils" %>
 <%@ page language="java" contentType="text/html; charset=US-ASCII"
          pageEncoding="US-ASCII"%>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
@@ -30,10 +33,13 @@
     <link href="css/jcarousel.css" rel="stylesheet" />
     <link href="css/flexslider.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
-
+    <script src="./libs/jquery/1.10.1/jquery.min.js"></script>
 
     <!-- Theme skin -->
     <link href="skins/default.css" rel="stylesheet" />
+
+
+
 </head>
 <body>
 <%
@@ -72,6 +78,7 @@
                         </div></li>
                         <li><a href="categorii.jsp">Home</a></li>
                         <li><a href="profil.jsp">Profil</a></li>
+                        <li><a href="stats.jsp">Statistici</a></li>
                         <li> <a href="CheckoutPage.jsp">Checkout Page</a></li>
                     </ul>
                 </div>
@@ -81,18 +88,19 @@
     <!-- end header -->
         <%
             OracleConn oracleConn4 = new OracleConn();
-            Connection conn4 = oracleConn4.getConn();
+            Connection conn8 = oracleConn4.getConn();
 
             String full_name="";
             String email_user ="";
             String data_nastere_user ="";
             int full_id=0;
+           // String filePath = "C:\\Users\\Alex\\IdeaProjects\\oracle3\\src\\main\\webapp\\img\\"+userName+".jpg";
+            String filePath ="D:\\img\\"+userName+".jpg";
             response.setContentType("text/html");
             Statement stmt4=null;
-            if(conn4!=null)
+            if(conn8!=null)
                 try {
-
-                    stmt4 = conn4.createStatement();
+                    stmt4 = conn8.createStatement();
                     String nume_user ="";
                     String prenume_user ="";
                     DateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
@@ -104,7 +112,18 @@
                         prenume_user = rs.getString("prenume");
                         email_user = rs.getString("email");
                         full_id = rs.getInt("userid");
+                        Blob blob=rs.getBlob("path");
+                        InputStream inputStream = blob.getBinaryStream();
+                        OutputStream outputStream = new FileOutputStream(filePath);
 
+                        int bytesRead = -1;
+                        byte[] buffer = new byte[4096];
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+
+                        inputStream.close();
+                        outputStream.close();
 
                     }
                     full_name=prenume_user+" "+nume_user;
@@ -119,8 +138,15 @@
                 <div class="container">
                     <div class="span3 well">
                         <center>
-                            <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRbezqZpEuwGSvitKy3wrwnth5kysKdRqBW54cAszm_wiutku3R" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+                            <img src="img/<%=userName%>.jpg" width="100" height="150">
                             <h3 class="media-heading"><%=full_name %></h3>
+                            <h3 class="media-heading">
+                            <form method="post" action="uploadServlet" enctype="multipart/form-data">
+                                <input type="hidden" name="id_user"  value="<%=full_id%>"/>
+                                <input type="file" name="photo" size="50"/>
+                                <input type="submit" value="Save">
+                            </form>
+                            </h3>
                             <span><strong>Data Nastere: </strong></span>
                             <span class="label label-info"><%=data_nastere_user%></span>
                             <span><strong>Email: </strong></span>
@@ -128,32 +154,43 @@
                             <span><strong>Ingrediente de evitat: </strong></span>
                             <span class="label label-warning"><a href="ingredientsAvoid.jsp">Lista</a></span>
 
+
                         </center>
                     </div>
                 </div>
             </div>
-            <div class="alert alert-danger">
-                <strong>Ai grija!</strong> Esti alergic la :
+            <div class="row">
+                <div class="alert alert-danger">
+                    <strong>Ai grija!</strong> Esti alergic la :<br></br>
 
-                <%
-                    OracleConn oracleConn2 = new OracleConn();
-                    Connection conn77 = oracleConn2.getConn();
-                    response.setContentType("text/html");
-                    Statement stmt75 ;
-                    if(conn77!=null)
-                        try {
+                    <%
 
-                            stmt75 = conn77.createStatement();
-                            ResultSet rs2 = stmt75.executeQuery(" select ingredientname from useravoidingredient where userid="+full_id+"");
-                            while(rs2.next()) {
-                                String ingredient = rs2.getString("ingredientname");
-                                out.println( "<a href=\"#\" style=\"height:30px;width:200px\" class=\"btn btn-danger\"><i class=\"fa fa-exclamation-triangle\"></i>"+ StringUtils.capitalize(ingredient)+"</a>");
+                        Statement stmt75 ;
+                        if(conn8!=null)
+                            try {
+
+                                stmt75 = conn8.createStatement();
+                                ResultSet rs2 = stmt75.executeQuery(" select ingredientname from useravoidingredient where userid="+full_id+"");
+                                while(rs2.next()) {
+                                    String ingredient = rs2.getString("ingredientname");
+                                    out.println( "<a  style=\"height:30px;width:200px\" class=\"btn btn-danger\"><i class=\"fa fa-exclamation-triangle\"></i>"+ StringUtils.capitalize(ingredient)+"</a>");
+                                }
+
+                            } catch(Exception ex){
+
                             }
-
-                        } catch(Exception ex){
-
-                        }
-                %>
+                    %>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="widget">
+                        <form action="userSearch.jsp" class="form-search" method="post">
+                            <input class="form-control" type="text"  name="nume_user_de_la_user" value="" placeholder="Introdu un user..">
+                            <input type="submit" style="position: absolute; left: -9999px"/>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -164,23 +201,20 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="one">
                                     <%
-                                        OracleConn oracleConn5 = new OracleConn();
-                                        Connection conn5 = oracleConn5.getConn();
 
-                                        response.setContentType("text/html");
                                         Statement stmt5=null;
                                         Statement stmt8=null;
-                                        if(conn5!=null)
+                                        if(conn8!=null)
                                             try {
 
-                                                stmt5 = conn5.createStatement();
+                                                stmt5 = conn8.createStatement();
                                                 ResultSet rs = stmt5.executeQuery(" select * from follow where userid2="+full_id+"");
                                                 while(rs.next()) {
 
                                                     int follower = rs.getInt("userid1");
 
                                                     String follower_full_name ="";
-                                                    stmt8 = conn5.createStatement();
+                                                    stmt8 = conn8.createStatement();
                                                     ResultSet rs2 = stmt8.executeQuery("select * from useri where userid="+follower+"" );
                                                     while(rs2.next()) {
                                                         String follower_nume = rs2.getString("nume");
@@ -189,9 +223,9 @@
                                                     }
                                                     out.println( "<div class=\"alert alert-info\">");
                                                     out.println( "<strong>"+follower_full_name+"</strong>");
-                                                    out.println( "<form action=\"checkProfilColeg\" method=\"POST\" >");
+                                                    out.println( "<form action=\"checkProfilColeg\" method=\"POST\" class=\"pull-right\" >");
                                                     out.println( "<input type=\"hidden\" name=\"id_coleg\" value="+follower+">");
-                                                    out.println( "<button type=\"submit\" class=\"btn btn-theme pull-right\">Check Profile</button>");
+                                                    out.println( "<button type=\"submit\" class=\"btn btn-theme\">Check Profile</button>");
                                                     out.println("</form>");
                                                     out.println("</div>");
 
@@ -204,22 +238,21 @@
                             <div class="tab-pane" id="two">
 
                                     <%
-                                        OracleConn oracleConn6 = new OracleConn();
-                                        Connection conn6 = oracleConn6.getConn();
-                                        System.out.println("full id: "+full_id);
-                                        response.setContentType("text/html");
+
+                                        System.out.println("full id din profil.jsp: "+full_id);
+
                                         Statement stmt6=null;
                                         Statement stmt7=null;
-                                        if(conn6!=null)
+                                        if(conn8!=null)
                                             try {
-                                                stmt6 = conn6.createStatement();
+                                                stmt6 = conn8.createStatement();
                                                 ResultSet rs = stmt6.executeQuery("select * from follow where userid1="+full_id+"");
                                                 while(rs.next()) {
 
                                                     int following = rs.getInt("userid2");
 
                                                     String following_full_name ="";
-                                                    stmt7 = conn6.createStatement();
+                                                    stmt7 = conn8.createStatement();
                                                     ResultSet rs2 = stmt7.executeQuery("select * from useri where userid="+following+"" );
                                                     while(rs2.next()) {
                                                         String following_nume = rs2.getString("nume");
@@ -230,9 +263,9 @@
                                                     out.println( "<div class=\"alert alert-info\">");
                                                     out.println( "<p>");
                                                     out.println( "<strong>"+following_full_name+"</strong>");
-                                                    out.println( "<form action=\"checkProfilColeg\" method=\"POST\" >");
+                                                    out.println( "<form action=\"checkProfilColeg\" method=\"POST\" class=\"pull-right\">");
                                                     out.println( "<input type=\"hidden\" name=\"id_coleg\" value="+following+">");
-                                                    out.println( "<button type=\"submit\" class=\"btn btn-theme pull-right\">Check Profile</button>");
+                                                    out.println( "<button type=\"submit\" class=\"btn btn-theme\">Check Profile</button>");
                                                     out.println("</form>");
                                                     out.println( "</p>");
                                                     out.println("</div>");
@@ -257,15 +290,11 @@
 
                             <%
 
-                                OracleConn oracleConn3 = new OracleConn();
-                                Connection conn = oracleConn3.getConn();
-
-                                response.setContentType("text/html");
                                 Statement stmt=null;
-                                if(conn!=null)
+                                if(conn8!=null)
                                     try {
 
-                                        stmt = conn.createStatement();
+                                        stmt = conn8.createStatement();
 
                                         ResultSet rs = stmt.executeQuery(" select * from categcampaign");
                                         while(rs.next()) {
@@ -293,17 +322,12 @@
                             <ul class="portfolio">
 
                                 <%
-
-                                    OracleConn oracleConn1 = new OracleConn();
-                                    Connection conn1 = oracleConn1.getConn();
-
-                                    response.setContentType("text/html");
                                     Statement stmt1=null;
                                     Statement stmt2=null;
-                                    if(conn1!=null)
+                                    if(conn8!=null)
                                         try {
                                             HashMap<Integer, ArrayList<Integer>> data = new HashMap<Integer,  ArrayList<Integer>>();
-                                            stmt2 = conn.createStatement();
+                                            stmt2 = conn8.createStatement();
                                             int id_campaign=0;
                                             int id_test=1;
                                             ArrayList<Integer> iduri_categ=new ArrayList<Integer>();
@@ -332,7 +356,7 @@
 
 
                                             String id_de_pus="";
-                                            stmt1 = conn.createStatement();
+                                            stmt1 = conn8.createStatement();
                                             int trecut=0;
                                             //PE ASTA E FACUT INDEX
 
@@ -367,7 +391,7 @@
                                                 out.println( "<article>");
                                                 out.println( "<div class=\"post-image\">");
                                                 out.println( "<div class=\"post-heading\">");
-                                                out.println( "<h3><a href=\"#\">'"+s+"'</a></h3>");
+                                                out.println( "<h3>"+s+"</h3>");
                                                 out.println( "</div>");
                                                 out.println( "</div>");
                                                 out.println( "<p>"+s2+"</p>");
@@ -375,7 +399,13 @@
                                                 out.println( "<ul class=\"meta-post\">");
                                                 out.println( "<li><i class=\"icon-calendar\"></i><a href=\"#\"> Mar 23, 2013</a></li>");
                                                 out.println( "</ul>");
-                                                out.println( "<a href=\"#\" class=\"pull-right\">Continue reading <i class=\"icon-angle-right\"></i></a>");
+                                                //out.println( "<a href=\"#\" class=\"pull-right\">Continue reading <i class=\"icon-angle-right\"></i></a>");
+
+                                                out.println( "<form action=\"insertAvoid\" method=\"POST\" >");
+                                                out.println( "<input type=\"hidden\" name=\"idut_user\" value="+full_id+">");
+                                                out.println( "<input type=\"hidden\" name=\"idut_campanie\" value="+id_campaign+">");
+                                                out.println( "<input type=\"submit\" name=\"submit_profil\" value=\"Nu ma mai intereseaza\" class=\"pull-right\">");
+                                                out.println("</form>");
                                                 out.println( "</div>");
 
                                                 out.println( "</article>");
@@ -383,6 +413,8 @@
                                             }
                                     } catch(Exception ex){
 
+                                        }finally{
+                                        conn8.close();
                                         }
                                 %>
 
