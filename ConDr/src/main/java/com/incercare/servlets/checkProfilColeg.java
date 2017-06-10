@@ -18,11 +18,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+/**
+ * Created by Alex on 22-Apr-17.
+ */
 @WebServlet("/checkProfilColeg")
 public class checkProfilColeg extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        OracleConn oracleConn3 = new OracleConn();
+        Connection conn12 = oracleConn3.getConn();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         int flag=0;
@@ -33,15 +37,12 @@ public class checkProfilColeg extends HttpServlet {
 
             System.out.println("Am intrat in checkprofilColeg: "+number1 );
 
-            OracleConn oracleConn3 = new OracleConn();
-            Connection conn3 = oracleConn3.getConn();
-            response.setContentType("text/html");
             Statement stmt4=null;
 
             String data_nastere_user ="";
-            if(conn3!=null)
+            if(conn12!=null)
                 try {
-                    stmt4 = conn3.createStatement();
+                    stmt4 = conn12.createStatement();
                     DateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
                     ResultSet rs3 = stmt4.executeQuery(" select * from useri where userid="+number1+"");
                     while(rs3.next()) {
@@ -72,7 +73,7 @@ public class checkProfilColeg extends HttpServlet {
                 out.println("<div class=\"row\">");
                 out.println("<div class=\"col-lg-12\">");
                 out.println("<div class=\"alert alert-warning\">");
-                out.println("<strong>:( , </strong> Nu exista colegul asta.");
+                out.println("<strong>Ba boule, </strong> Nu exista colegul asta.");
                 out.println("</div>");
                 out.println("</div>");
                 out.println("</div>");
@@ -80,6 +81,12 @@ public class checkProfilColeg extends HttpServlet {
             }
         } catch (Exception e) {
             out.println(e.getMessage());
+        }finally {
+            try {
+                conn12.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
     }
