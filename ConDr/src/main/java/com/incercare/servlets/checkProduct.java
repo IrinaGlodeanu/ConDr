@@ -20,6 +20,8 @@ public class checkProduct extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         int flag=0;
+        OracleConn oracleConn3 = new OracleConn();
+        Connection conn11 = oracleConn3.getConn();
         try {
             String id_produs = request.getParameter("id_produs");
             int id_produs_parse = Integer.parseInt(id_produs);
