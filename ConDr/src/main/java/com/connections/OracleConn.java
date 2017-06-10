@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Created by Alex on 10-Apr-17.
- */
 public class OracleConn {
 
     public Connection getConn(){
