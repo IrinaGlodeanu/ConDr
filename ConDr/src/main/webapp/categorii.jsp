@@ -1,3 +1,10 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Alex
+  Date: 20-Apr-17
+  Time: 11:58 PM
+  To change this template use File | Settings | File Templates.
+--%>
 <%@page import="java.sql.*"%>
 <%@ page import="com.connections.OracleConn" %>
 <%@ page import="java.io.PrintWriter" %>
@@ -73,6 +80,7 @@
                         </div></li>
                         <li><a href="categorii.jsp">Home</a></li>
                         <li><a href="profil.jsp">Profil</a></li>
+                        <li><a href="stats.jsp">Statistici</a></li>
                         <li>  <a href="CheckoutPage.jsp">Checkout Page</a></li>
 <!--
                         <li>
@@ -95,29 +103,47 @@
     <section id="content">
         <div class="container">
 
+
+            <%
+
+                OracleConn oracleConn3 = new OracleConn();
+                Connection conn3 = oracleConn3.getConn();
+                int idut_user_inceput=0;
+                response.setContentType("text/html");
+                Statement stmt3=null;
+                Statement stmt4=null;
+                if(conn3!=null)
+                    try {
+                        stmt4 = conn3.createStatement();
+
+                        ResultSet rs3 = stmt4.executeQuery(" select * from useri where email='"+userName+"'");
+                        while(rs3.next()) {
+                            idut_user_inceput = rs3.getInt("userid");
+                            int isModerator = rs3.getInt("isModerator");
+                            if(isModerator==1) {
+                                out.println(" <div class=\"row\">");
+                                out.println(" <div class=\"col-lg-12\">");
+                                out.println( "<form action=\"insertCampaign.jsp\" method=\"POST\" >");
+                                out.println( "<input type=\"submit\" value=\"Add Campaign\">");
+                                out.println("</form>");
+                                out.println("</div>");
+                                out.println("</div>");
+                            }
+                        }
+
+
+                    } catch(Exception ex){
+
+                    }
+            %>
             <div class="row">
                 <div class="col-lg-12">
                     <ul class="portfolio-categ filter">
                         <li class="all active"><a href="#">All</a></li>
                         <%
 
-                            OracleConn oracleConn3 = new OracleConn();
-                            Connection conn3 = oracleConn3.getConn();
-                            int idut_user_inceput=0;
-                            response.setContentType("text/html");
-                            Statement stmt3=null;
-                            Statement stmt4=null;
                             if(conn3!=null)
                                 try {
-                                    stmt4 = conn3.createStatement();
-
-                                    ResultSet rs3 = stmt4.executeQuery(" select * from useri where email='"+userName+"'");
-                                    while(rs3.next()) {
-                                        idut_user_inceput = rs3.getInt("userid");
-                                        System.out.println("id la inceput: "+idut_user_inceput);
-                                    }
-
-
                                     stmt3 = conn3.createStatement();
 
                                     ResultSet rs = stmt3.executeQuery(" select * from categcampaign");
@@ -144,16 +170,13 @@
 
                                 <%
 
-                                    OracleConn oracleConn1 = new OracleConn();
-                                    Connection conn1 = oracleConn1.getConn();
 
-                                    response.setContentType("text/html");
                                     Statement stmt1=null;
                                     Statement stmt2=null;
-                                    if(conn1!=null)
+                                    if(conn3!=null)
                                         try {
                                             HashMap<Integer, ArrayList<Integer>> data = new HashMap<Integer,  ArrayList<Integer>>();
-                                            stmt2 = conn1.createStatement();
+                                            stmt2 = conn3.createStatement();
                                             int id_campaign=0;
                                             int id_test=1;
                                             ArrayList<Integer> iduri_categ=new ArrayList<Integer>();
@@ -166,8 +189,8 @@
                                                     if (data.get(id_test) == null)data.put(id_test, new ArrayList<Integer>());
                                                     for(int i=0;i<iduri_categ.size();i++)
                                                         data.get(id_test).add(iduri_categ.get(i));
-
-
+                                                   // data.put(id_test,iduri_categ);
+                                                  // System.out.println("LISTA ASTA CONTINE contains: "+ id_test + iduri_categ.toString());
                                                     iduri_categ.clear();
                                                 }
 
@@ -181,7 +204,7 @@
 
 
                                             String id_de_pus="";
-                                            stmt1 = conn1.createStatement();
+                                            stmt1 = conn3.createStatement();
                                             int trecut=0;
                                             int idut_user_preluat =0;
                                             int idut_campanie_preluat =0;
@@ -192,6 +215,7 @@
                                                 id_campaign = rs.getInt("campaignid");
                                                 String s = rs.getString("campaignname");
                                                 String s2 = rs.getString("CAMPAIGNDESCRIPTION");
+                                                String s3 = rs.getString("path");
                                                 id_de_pus="";
                                                 ArrayList<Integer> list12 = new ArrayList<>();
                                                 for (Map.Entry<Integer, ArrayList<Integer>> entry : data.entrySet()) {
@@ -215,24 +239,32 @@
                                                 //  String s2 = rs.getString("BARCODE");
                                                 // System.out.println(n + " " + s + " " + s2);
                                                 out.println( "<li class=\"item-thumbs col-lg-3 design\" data-id=\"id-0\" data-type='"+id_de_pus+"'>");
-                                                out.println( "<a class=\"hover-wrap fancybox\" data-fancybox-group=\"gallery\" title='"+s+"' href=\"img/works/1.jpg\">");
+                                                out.println( "<a class=\"hover-wrap fancybox\" data-fancybox-group=\"gallery\" title='"+s+"' href='"+s3+"'>");
                                                 out.println( "<span class=\"overlay-img\"></span>");
                                                 out.println( "<span class=\"overlay-img-thumb font-icon-plus\"></span>");
                                                 out.println( " </a>");
                                                // out.println("<a href=\"#\" class=\"btn btn-small btn-warning\"><i class=\"fa fa-heart\"></i>Follow</a>");
                                                // out.println( " <img src=\"img/works/1.jpg\" alt='"+s2+"");
                                                // out.println( "<a href=\"#\" class=\"btn btn-small btn-warning pull-right\"><i class=\"fa fa-heart\"></i>Follow</a>'>");
-
-                                                out.println( " <img src=\"img/works/1.jpg\" alt='"+s2+"");
+                                                out.println( " <h5>"+s+"</h5>");
+                                                out.println( " <img src='"+s3+"' alt='"+s2+"");
                                                 out.println( "<form action=\"insertSupport\" method=\"POST\" >");
                                                 out.println( "<input type=\"hidden\" name=\"idut_user\" value="+idut_user_inceput+">");
                                                 out.println( "<input type=\"hidden\" name=\"idut_campanie\" value="+id_campaign+">");
-                                                out.println( "<input type=\"submit\" value=\"Follow\">");
+                                                out.println( "<input type=\"submit\" class=\"btn btn-success pull-left\" value=\"Follow\">");
+                                                out.println("</form>");
+                                                out.println( "<form action=\"campanieServlet\" method=\"POST\" >");
+                                                out.println( "<input type=\"hidden\" name=\"idut_campanie\" value="+id_campaign+">");
+                                                out.println( "<input type=\"submit\" class=\"btn btn-warning pull-right\" value=\"Pagina\">");
+                                                out.println("</form>");
+                                                out.println( "<form action=\"insertAvoid\" method=\"POST\" >");
+                                                out.println( "<input type=\"hidden\" name=\"idut_user\" value="+idut_user_inceput+">");
+                                                out.println( "<input type=\"hidden\" name=\"idut_campanie\" value="+id_campaign+">");
+                                                out.println( "<input type=\"submit\" class=\"btn btn-info\"  value=\"Nu ma intereseaza\">");
                                                 out.println("</form>");
                                                 out.println( "'>");
 
                                                 out.println( "</li>");
-
 
                                             }
                                             if(idut_user_preluat!=0)
@@ -240,6 +272,8 @@
 
                                         } catch(Exception ex){
 
+                                        }finally{
+                                            conn3.close();
                                         }
                                 %>
 
