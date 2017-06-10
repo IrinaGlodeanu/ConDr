@@ -48,6 +48,25 @@
             if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
         }
     }
+
+    OracleConn oracleConn = new OracleConn();
+    Connection conn9 = oracleConn.getConn();
+
+    int full_id=0;
+    response.setContentType("text/html");
+    Statement stmt4=null;
+    if(conn9!=null)
+        try {
+            stmt4 = conn9.createStatement();
+            ResultSet rs = stmt4.executeQuery(" select * from useri where email='"+userName+"'");
+            while(rs.next()) {
+                full_id = rs.getInt("userid");
+                }
+
+
+        } catch(Exception ex){
+
+        }
 %>
 <div id="wrapper">
     <!-- start header -->
@@ -72,6 +91,7 @@
                         </div></li>
                         <li><a href="categorii.jsp">Home</a></li>
                         <li><a href="profil.jsp">Profil</a></li>
+                        <li><a href="stats.jsp">Statistici</a></li>
                         <li> <a href="CheckoutPage.jsp">Checkout Page</a></li>
                     </ul>
                 </div>
@@ -80,13 +100,7 @@
     </header>
     <!-- end header -->
     <%
-        OracleConn oracleConn4 = new OracleConn();
-        Connection conn4 = oracleConn4.getConn();
-
-        String full_name="";
-        int full_id=0;
         response.setContentType("text/html");
-        Statement stmt4=null;
         int coleg_id=(Integer) request.getAttribute("coleg_id");
         String coleg_nume=(String) request.getAttribute("coleg_nume");
         String coleg_prenume=(String) request.getAttribute("coleg_prenume");
@@ -101,12 +115,24 @@
                 <div class="container">
                     <div class="span3 well">
                         <center>
-                            <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRbezqZpEuwGSvitKy3wrwnth5kysKdRqBW54cAszm_wiutku3R" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+                            <img src="http://localhost:8082/img/<%=coleg_email%>.jpg" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
                             <h3 class="media-heading"><%=coleg_full_name %></h3>
                             <span><strong>Data Nastere: </strong></span>
                             <span class="label label-info"><%=coleg_data_nastere%></span>
                             <span><strong>Email: </strong></span>
                             <span class="label label-success"><%=coleg_email %></span>
+
+                            <form method="post" action="followUser">
+                                <input type="hidden" name="id_propriu"  value="<%=full_id%>"/>
+                                <input type="hidden" name="id_coleg"  value="<%=coleg_id%>"/>
+                                <input type="submit" value="Follow">
+                            </form>
+                            <!-- de facut daca mai e timp un query aici pentru a nu se afisa unul dintre butoane daca nu apare in tabela follow la idul nostru -->
+                            <form method="post" action="unfollowUser">
+                                <input type="hidden" name="id_propriu"  value="<%=full_id%>"/>
+                                <input type="hidden" name="id_coleg"  value="<%=coleg_id%>"/>
+                                <input type="submit" value="unFollow">
+                            </form>
 
                         </center>
                     </div>
@@ -121,23 +147,19 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="one">
                                 <%
-                                    OracleConn oracleConn5 = new OracleConn();
-                                    Connection conn5 = oracleConn5.getConn();
-
-                                    response.setContentType("text/html");
                                     Statement stmt5=null;
                                     Statement stmt8=null;
-                                    if(conn5!=null)
+                                    if(conn9!=null)
                                         try {
 
-                                            stmt5 = conn5.createStatement();
+                                            stmt5 = conn9.createStatement();
                                             ResultSet rs = stmt5.executeQuery(" select * from follow where userid2="+coleg_id+"");
                                             while(rs.next()) {
 
                                                 int follower = rs.getInt("userid1");
 
                                                 String follower_full_name ="";
-                                                stmt8 = conn5.createStatement();
+                                                stmt8 = conn9.createStatement();
                                                 ResultSet rs2 = stmt8.executeQuery("select * from useri where userid="+follower+"" );
                                                 while(rs2.next()) {
                                                     String follower_nume = rs2.getString("nume");
@@ -147,9 +169,9 @@
 
                                                 out.println( "<div class=\"alert alert-info\">");
                                                 out.println( "<strong>"+follower_full_name+"</strong>");
-                                                out.println( "<form action=\"checkProfilColeg\" method=\"POST\" >");
+                                                out.println( "<form action=\"checkProfilColeg\" method=\"POST\" class=\"pull-right\">");
                                                 out.println( "<input type=\"hidden\" name=\"id_coleg\" value="+follower+">");
-                                                out.println( "<button type=\"submit\" class=\"btn btn-theme pull-right\">Check Profile</button>");
+                                                out.println( "<button type=\"submit\" class=\"btn btn-theme\">Check Profile</button>");
                                                 out.println("</form>");
                                                 out.println("</div>");
 
@@ -162,22 +184,20 @@
                             <div class="tab-pane" id="two">
 
                                 <%
-                                    OracleConn oracleConn6 = new OracleConn();
-                                    Connection conn6 = oracleConn6.getConn();
-                                    System.out.println("full id: "+coleg_id);
-                                    response.setContentType("text/html");
+
+                                    System.out.println("full id din profilColeg.jsp: "+coleg_id);
                                     Statement stmt6=null;
                                     Statement stmt7=null;
-                                    if(conn6!=null)
+                                    if(conn9!=null)
                                         try {
-                                            stmt6 = conn6.createStatement();
+                                            stmt6 = conn9.createStatement();
                                             ResultSet rs = stmt6.executeQuery("select * from follow where userid1="+coleg_id+"");
                                             while(rs.next()) {
 
                                                 int following = rs.getInt("userid2");
 
                                                 String following_full_name ="";
-                                                stmt7 = conn6.createStatement();
+                                                stmt7 = conn9.createStatement();
                                                 ResultSet rs2 = stmt7.executeQuery("select * from useri where userid="+following+"" );
                                                 while(rs2.next()) {
                                                     String following_nume = rs2.getString("nume");
@@ -187,9 +207,9 @@
                                                 out.println( "<div class=\"alert alert-info\">");
                                                 out.println( "<p>");
                                                 out.println( "<strong>"+following_full_name+"</strong>");
-                                                out.println( "<form action=\"checkProfilColeg\" method=\"POST\" >");
+                                                out.println( "<form action=\"checkProfilColeg\" method=\"POST\" class=\"pull-right\" >");
                                                 out.println( "<input type=\"hidden\" name=\"id_coleg\" value="+following+">");
-                                                out.println( "<button type=\"submit\" class=\"btn btn-theme pull-right\">Check Profile</button>");
+                                                out.println( "<button type=\"submit\" class=\"btn btn-theme\">Check Profile</button>");
                                                 out.println("</form>");
                                                 out.println( "</p>");
                                                 out.println("</div>");
@@ -215,15 +235,11 @@
 
                         <%
 
-                            OracleConn oracleConn3 = new OracleConn();
-                            Connection conn = oracleConn3.getConn();
-
-                            response.setContentType("text/html");
                             Statement stmt=null;
-                            if(conn!=null)
+                            if(conn9!=null)
                                 try {
 
-                                    stmt = conn.createStatement();
+                                    stmt = conn9.createStatement();
 
                                     ResultSet rs = stmt.executeQuery(" select * from categcampaign");
                                     while(rs.next()) {
@@ -247,17 +263,12 @@
                         <ul class="portfolio">
 
                             <%
-
-                                OracleConn oracleConn1 = new OracleConn();
-                                Connection conn1 = oracleConn1.getConn();
-
-                                response.setContentType("text/html");
                                 Statement stmt1=null;
                                 Statement stmt2=null;
-                                if(conn1!=null)
+                                if(conn9!=null)
                                     try {
                                         HashMap<Integer, ArrayList<Integer>> data = new HashMap<Integer,  ArrayList<Integer>>();
-                                        stmt2 = conn.createStatement();
+                                        stmt2 = conn9.createStatement();
                                         int id_campaign=0;
                                         int id_test=1;
                                         ArrayList<Integer> iduri_categ=new ArrayList<Integer>();
@@ -285,7 +296,7 @@
 
 
                                         String id_de_pus="";
-                                        stmt1 = conn.createStatement();
+                                        stmt1 = conn9.createStatement();
                                         int trecut=0;
 
                                         ResultSet rs = stmt1.executeQuery(" select * from campaign a,support b,useri c where a.campaignid=b.campaignid and b.userid=c.userid and c.email='"+coleg_email+"'");
@@ -319,7 +330,7 @@
                                             out.println( "<article>");
                                             out.println( "<div class=\"post-image\">");
                                             out.println( "<div class=\"post-heading\">");
-                                            out.println( "<h3><a href=\"#\">'"+s+"'</a></h3>");
+                                            out.println( "<h3>"+s+"</h3>");
                                             out.println( "</div>");
                                             out.println( "</div>");
                                             out.println( "<p>"+s2+"</p>");
@@ -327,7 +338,13 @@
                                             out.println( "<ul class=\"meta-post\">");
                                             out.println( "<li><i class=\"icon-calendar\"></i><a href=\"#\"> Mar 23, 2013</a></li>");
                                             out.println( "</ul>");
-                                            out.println( "<a href=\"#\" class=\"pull-right\">Continue reading <i class=\"icon-angle-right\"></i></a>");
+                                           // out.println( "<a href=\"#\" class=\"pull-right\">Continue reading <i class=\"icon-angle-right\"></i></a>");
+
+                                            out.println( "<form action=\"insertSupport\" method=\"POST\" >");
+                                            out.println( "<input type=\"hidden\" name=\"idut_user\" value="+full_id+">");
+                                            out.println( "<input type=\"hidden\" name=\"idut_campanie\" value="+id_campaign+">");
+                                            out.println( "<input type=\"submit\" name=\"submit_profil_coleg\" value=\"Follow\" class=\"pull-right\">");
+                                            out.println("</form>");
                                             out.println( "</div>");
 
                                             out.println( "</article>");
@@ -335,6 +352,8 @@
                                         }
                                     } catch(Exception ex){
 
+                                    }finally{
+                                        conn9.close();
                                     }
                             %>
 

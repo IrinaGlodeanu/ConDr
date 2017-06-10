@@ -64,6 +64,7 @@
                         </div></li>
                         <li><a href="categorii.jsp">Home</a></li>
                         <li><a href="profil.jsp">Profil</a></li>
+                        <li><a href="stats.jsp">Statistici</a></li>
                         <li> <a href="CheckoutPage.jsp">Checkout Page</a></li>
                     </ul>
                 </div>
@@ -74,8 +75,8 @@
 
     <%
 
-        OracleConn oracleConn3 = new OracleConn();
-        Connection conn3 = oracleConn3.getConn();
+        OracleConn oracleConn4 = new OracleConn();
+        Connection conn3 = oracleConn4.getConn();
         int idut_user_inceput1=0;
         String idut_user_inceput="";
         response.setContentType("text/html");
@@ -88,7 +89,7 @@
                 while(rs3.next()) {
                     idut_user_inceput1 = rs3.getInt("userid");
                     idut_user_inceput = Integer.toString(idut_user_inceput1);
-                    System.out.println("id la inceput: "+idut_user_inceput);
+                    System.out.println("id la inceput ingredientsAvoid: "+idut_user_inceput);
                 }
 
             } catch(Exception ex){
@@ -98,6 +99,26 @@
 
     <section id="content">
         <div class="container">
+
+            <div class="row">
+                <div class="alert alert-danger">
+                    <strong>Ai grija!</strong> Esti alergic la :<br></br>
+                    <%
+
+                        Statement stmt75;
+                        if(conn3!=null)
+                            try {
+                                stmt75 = conn3.createStatement();
+                                ResultSet rs2 = stmt75.executeQuery(" select ingredientname from useravoidingredient where userid="+idut_user_inceput1+"");
+                                while(rs2.next()) {
+                                    String ingredient = rs2.getString("ingredientname");
+                                    out.println( "<a style=\"height:30px;width:200px\" class=\"btn btn-danger\"><i class=\"fa fa-exclamation-triangle\"></i>"+ StringUtils.capitalize(ingredient)+"</a>");
+                                }
+                            } catch(Exception ex){
+                            }
+                    %>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-3">
                     <div class="post-heading">
@@ -106,19 +127,16 @@
                         <form action="ingredientsAvoidServlet" method="post">
                         <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
                         <%
-                            OracleConn oracleConn1 = new OracleConn();
-                            Connection conn1 = oracleConn1.getConn();
 
-                            response.setContentType("text/html");
                             Statement stmt2;
-                            if(conn1!=null)
+                            if(conn3!=null)
                             try {
 
-                            stmt2 = conn1.createStatement();
+                            stmt2 = conn3.createStatement();
                             ResultSet rs2 = stmt2.executeQuery("SELECT ingredientname from legume");
                             while(rs2.next()) {
                             String ingredient = rs2.getString("ingredientname");
-                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                             }
 
 
@@ -127,6 +145,7 @@
                             }
                             %>
                         <input type="submit" name="submit" value="Avoid">
+                        <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
@@ -140,14 +159,14 @@
 
                                 response.setContentType("text/html");
                                 Statement stmt3 ;
-                                if(conn1!=null)
+                                if(conn3!=null)
                                     try {
 
-                                        stmt3 = conn1.createStatement();
+                                        stmt3 = conn3.createStatement();
                                         ResultSet rs2 = stmt3.executeQuery("SELECT ingredientname from Fructe");
                                         while(rs2.next()) {
                                             String ingredient = rs2.getString("ingredientname");
-                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                                         }
 
                                     } catch(Exception ex){
@@ -157,6 +176,7 @@
 
 
                         <input type="submit" name="submit" value="Avoid">
+                            <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
@@ -168,16 +188,15 @@
 
                             <%
 
-                                response.setContentType("text/html");
                                 Statement stmt1 ;
-                                if(conn1!=null)
+                                if(conn3!=null)
                                     try {
 
-                                        stmt1 = conn1.createStatement();
+                                        stmt1 = conn3.createStatement();
                                         ResultSet rs2 = stmt1.executeQuery("SELECT ingredientname from produse_animale");
                                         while(rs2.next()) {
                                             String ingredient = rs2.getString("ingredientname");
-                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                                         }
 
                                     } catch(Exception ex){
@@ -187,6 +206,7 @@
 
 
                         <input type="submit" name="submit" value="Avoid">
+                            <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
@@ -196,17 +216,15 @@
                         <form action="ingredientsAvoidServlet" method="post">
                         <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
                             <%
-
-                                response.setContentType("text/html");
                                 Statement stmt5 ;
-                                if(conn1!=null)
+                                if(conn3!=null)
                                     try {
 
-                                        stmt5 = conn1.createStatement();
+                                        stmt5 = conn3.createStatement();
                                         ResultSet rs2 = stmt5.executeQuery("SELECT ingredientname from Asezonari");
                                         while(rs2.next()) {
                                             String ingredient = rs2.getString("ingredientname");
-                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                                         }
 
                                     } catch(Exception ex){
@@ -216,6 +234,7 @@
 
 
                         <input type="submit" name="submit" value="Avoid">
+                            <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
@@ -229,16 +248,16 @@
                         <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
                             <%
 
-                                response.setContentType("text/html");
+
                                 Statement stmt6 ;
-                                if(conn1!=null)
+                                if(conn3!=null)
                                     try {
 
-                                        stmt6 = conn1.createStatement();
+                                        stmt6 = conn3.createStatement();
                                         ResultSet rs2 = stmt6.executeQuery("SELECT ingredientname from Lactate");
                                         while(rs2.next()) {
                                             String ingredient = rs2.getString("ingredientname");
-                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                                         }
 
                                     } catch(Exception ex){
@@ -248,6 +267,7 @@
 
 
                         <input type="submit" name="submit" value="Avoid">
+                            <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
@@ -258,16 +278,15 @@
                         <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
                             <%
 
-                                response.setContentType("text/html");
                                 Statement stmt7 ;
-                                if(conn1!=null)
+                                if(conn3!=null)
                                     try {
 
-                                        stmt7 = conn1.createStatement();
+                                        stmt7 = conn3.createStatement();
                                         ResultSet rs2 = stmt7.executeQuery("SELECT ingredientname from Cereale");
                                         while(rs2.next()) {
                                             String ingredient = rs2.getString("ingredientname");
-                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                                         }
 
                                     } catch(Exception ex){
@@ -277,6 +296,7 @@
 
 
                         <input type="submit" name="submit" value="Avoid">
+                            <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
@@ -287,25 +307,27 @@
                         <input type="hidden" name="selectii" value="<%=idut_user_inceput%>">
                             <%
 
-                                response.setContentType("text/html");
                                 Statement stmt8 ;
-                                if(conn1!=null)
+                                if(conn3!=null)
                                     try {
 
-                                        stmt8 = conn1.createStatement();
+                                        stmt8 = conn3.createStatement();
                                         ResultSet rs2 = stmt8.executeQuery("SELECT ingredientname from produse_chimice");
                                         while(rs2.next()) {
                                             String ingredient = rs2.getString("ingredientname");
-                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value="+ingredient+">"+ StringUtils.capitalize(ingredient)+"<br>");
+                                            out.println( "<input type=\"checkbox\" name=\"selectii\" value='"+ingredient+"'>"+ StringUtils.capitalize(ingredient)+"<br>");
                                         }
 
                                     } catch(Exception ex){
 
+                                    }finally {
+                                        conn3.close();
                                     }
                             %>
 
 
                         <input type="submit" name="submit" value="Avoid">
+                            <input type="submit" name="submit_unavoid" value="Unavoid">
                         </form>
                     </div>
                 </div>
