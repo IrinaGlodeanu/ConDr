@@ -9,4 +9,5 @@
 
   Problema pe care aplicatia incearca sa o rezolve este dificultatea procesului de cumparare/folosire a unor bunuri/servicii care se potrivesc cu valorile etice personale ale fiecarui user care isi face cont. De asemenea, este oferit un instrument cu ajutorul caruia un utilizator poate face alegeri sprijinind sau nu indirect produse/servicii, ducand astfel la o evolutie in bine a dezvoltarii acestora.
 
+  New video: https://youtu.be/sx3D2eJe18g 
   Video: https://www.youtube.com/watch?v=eVgRut9m9-A
